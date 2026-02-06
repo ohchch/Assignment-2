@@ -1,119 +1,68 @@
 class Node:
     def __init__(self, key):
+        self.key = key
         self.left = None
         self.right = None
-        self.val = key
 
 class BinarySearchTree:
     def __init__(self):
         self.root = None
 
     def insert(self, key):
-        if self.root is None:
-            self.root = Node(key)
-        else:
-            self._insert_recursively(self.root, key)
+        self.root = self._insert_recursive(self.root, key)
 
-    def _insert_recursively(self, root, key):
-        if key < root.val:
-            if root.left is None:
-                root.left = Node(key)
-            else:
-                self._insert_recursively(root.left, key)
-        else:
-            if root.right is None:
-                root.right = Node(key)
-            else:
-                self._insert_recursively(root.right, key)
+    def _insert_recursive(self, root, key):
+        if root is None:
+            return Node(key)
+        if key < root.key:
+            root.left = self._insert_recursive(root.left, key)
+        elif key > root.key:
+            root.right = self._insert_recursive(root.right, key)
+        return root
 
     def delete(self, key):
-        self.root = self._delete_recursively(self.root, key)
+        self.root = self._delete_recursive(self.root, key)
 
-    def _delete_recursively(self, root, key):
+    def _delete_recursive(self, root, key):
         if root is None:
             return root
-        if key < root.val:
-            root.left = self._delete_recursively(root.left, key)
-        elif key > root.val:
-            root.right = self._delete_recursively(root.right, key)
+        if key < root.key:
+            root.left = self._delete_recursive(root.left, key)
+        elif key > root.key:
+            root.right = self._delete_recursive(root.right, key)
         else:
             if root.left is None:
                 return root.right
             elif root.right is None:
                 return root.left
-            temp = self._min_value_node(root.right)
-            root.val = temp.val
-            root.right = self._delete_recursively(root.right, temp.val)
+            root.key = self._min_value(root.right)
+            root.right = self._delete_recursive(root.right, root.key)
         return root
 
-    def _min_value_node(self, node):
-        current = node
-        while current.left:
-            current = current.left
-        return current
+    def _min_value(self, root):
+        min_val = root.key
+        while root.left is not None:
+            min_val = root.left.key
+            root = root.left
+        return min_val
 
     def search(self, key):
-        return self._search_recursively(self.root, key)
+        return self._search_recursive(self.root, key)
 
-    def _search_recursively(self, root, key):
-        if root is None or root.val == key:
-            return root
-        if key < root.val:
-            return self._search_recursively(root.left, key)
-        return self._search_recursively(root.right, key)
-
-    def find_min(self):
-        return self._min_value_node(self.root).val if self.root else None
-
-    def find_max(self):
-        return self._max_value_node(self.root).val if self.root else None
-
-    def _max_value_node(self, node):
-        current = node
-        while current.right:
-            current = current.right
-        return current
-
-    def inorder_traversal(self):
-        return self._inorder_recursively(self.root)
-
-    def _inorder_recursively(self, root):
-        return (self._inorder_recursively(root.left) if root.left else []) + [root.val] + (self._inorder_recursively(root.right) if root.right else []) if root else []
-
-    def preorder_traversal(self):
-        return self._preorder_recursively(self.root)
-
-    def _preorder_recursively(self, root):
-        return [root.val] + (self._preorder_recursively(root.left) if root.left else []) + (self._preorder_recursively(root.right) if root.right else []) if root else []
-
-    def postorder_traversal(self):
-        return self._postorder_recursively(self.root)
-
-    def _postorder_recursively(self, root):
-        return (self._postorder_recursively(root.left) if root.left else []) + (self._postorder_recursively(root.right) if root.right else []) + [root.val] if root else []
-
-    def height(self):
-        return self._height_recursively(self.root)
-
-    def _height_recursively(self, root):
+    def _search_recursive(self, root, key):
         if root is None:
-            return 0
-        return 1 + max(self._height_recursively(root.left), self._height_recursively(root.right))
+            return False
+        if root.key == key:
+            return True
+        if key < root.key:
+            return self._search_recursive(root.left, key)
+        return self._search_recursive(root.right, key)
 
-    def node_count(self):
-        return self._node_count_recursively(self.root)
+    def inorder(self):
+        self._inorder_recursive(self.root)
 
-    def _node_count_recursively(self, root):
-        if root is None:
-            return 0
-        return 1 + self._node_count_recursively(root.left) + self._node_count_recursively(root.right)
-
-    def leaf_count(self):
-        return self._leaf_count_recursively(self.root)
-
-    def _leaf_count_recursively(self, root):
-        if root is None:
-            return 0
-        if root.left is None and root.right is None:
-            return 1
-        return self._leaf_count_recursively(root.left) + self._leaf_count_recursively(root.right)
+    def _inorder_recursive(self, root):
+        if root:
+            self._inorder_recursive(root.left)
+            print(f"{root.key}", end=" ")
+            self._inorder_recursive(root.right)
