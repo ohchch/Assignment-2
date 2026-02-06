@@ -4,10 +4,24 @@ This project includes a portable Python setup mechanism, allowing it to run on W
 
 ## How to Run
 
+### Option 1: Automatic / Portable (Recommended)
 Simply double-click **`start.bat`**.
 
 - **First Run**: The script will automatically download a standalone Python runtime (approx. 10MB) into the `python_runtime` folder.
 - **Subsequent Runs**: It will execute immediately using the local runtime.
+
+### Option 2: Using Installed Python (Manual)
+If you already have Python installed and added to PATH, you can run the program directly from your terminal:
+
+**PowerShell:**
+```powershell
+Get-Content input.txt | python python/Main.py
+```
+
+**Command Prompt (CMD):**
+```cmd
+python python/Main.py < input.txt
+```
 
 ## How to Distribute / Submit
 
