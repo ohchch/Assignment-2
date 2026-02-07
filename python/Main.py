@@ -1,45 +1,79 @@
 import sys
+import os
 from BinarySearchTree import BinarySearchTree
 from Graph import Graph
 
 # Helper to mimic Java Scanner behavior (reading token by token)
 class Scanner:
-    def __init__(self, input_source):
-        self.tokens = input_source.read().split()
-        self.iterator = iter(self.tokens)
+    def __init__(self, input_source, echo=False):
+        self.input_source = input_source
+        self.tokens = []
+        self.echo = echo
 
     def has_next(self):
-        # Simplification: if iterator is not exhausted
-        # In Python iterators don't easily peek, but we can catch StopIteration
-        pass 
+        return True
 
     def next(self):
-        try:
-            return next(self.iterator)
-        except StopIteration:
-            return None
+        while not self.tokens:
+            line = self.input_source.readline()
+            if not line: # EOF
+                return None
+            line = line.replace('\ufeff', '')
+            self.tokens = line.split()
+        
+        token = self.tokens.pop(0)
+        if self.echo:
+            print(token)
+        return token
     
     def next_int(self):
         token = self.next()
         if token is None:
             return None
-        return int(token)
+        try:
+            return int(token)
+        except ValueError:
+            print(f"Warning: Expected integer, got '{token}'")
+            return None
 
-scanner = Scanner(sys.stdin)
+# Global variables
+scanner = None
 bst = BinarySearchTree()
 graph = Graph()
 
 def main():
+    global scanner
     print("Welcome to the Data Structures Assignment Program!")
     
+    # Check if stdin is interactive or redirected
+    if not sys.stdin.isatty():
+        # Redirected input (e.g., python Main.py < input.txt)
+        # Automatically enable echo to mimic manual input behavior
+        print("Batch mode detected (input redirected). Echo enabled.")
+        scanner = Scanner(sys.stdin, echo=True)
+    else:
+        # Interactive mode
+        print("Do you want to use input.txt? (y/n): ", end="", flush=True)
+        user_input = sys.stdin.readline().strip().lower()
+
+        if user_input == 'y':
+            if os.path.exists("input.txt"):
+                print("Using input.txt...")
+                scanner = Scanner(open("input.txt", "r"), echo=True)
+            else:
+                print("input.txt not found. Falling back to manual input.")
+                scanner = Scanner(sys.stdin, echo=False)
+        else:
+            print("Using manual input.")
+            scanner = Scanner(sys.stdin, echo=False)
+
     while True:
         print("\n=== MAIN MENU ===")
         print("1. Binary Search Tree Operations (Part A)")
         print("2. Graph Operations (Part B)")
         print("3. Exit")
-        print("Enter your choice: ", end="")
+        print("Enter your choice: ", end="", flush=True)
         
-        # Simulate input echo if needed, but standard print is fine
         choice = scanner.next_int()
         if choice is None:
             break # End of input
@@ -64,28 +98,31 @@ def bst_menu():
         print("5. Display tree properties (Height, Node count, Leaf count)")
         print("6. Find Minimum and Maximum values")
         print("7. Return to Main Menu")
-        print("Enter your choice: ", end="")
+        print("Enter your choice: ", end="", flush=True)
 
         choice = scanner.next_int()
         if choice is None: return
 
         if choice == 1:
-            print("Enter value to insert: ", end="")
+            print("Enter value to insert: ", end="", flush=True)
             val = scanner.next_int()
-            bst.insert(val)
-            print(f"Value {val} inserted successfully.")
+            if val is not None:
+                bst.insert(val)
+                print(f"Value {val} inserted successfully.")
         elif choice == 2:
-            print("Enter value to delete: ", end="")
+            print("Enter value to delete: ", end="", flush=True)
             val = scanner.next_int()
-            bst.delete(val)
-            print(f"Deletion operation completed for value {val}.")
+            if val is not None:
+                bst.delete(val)
+                print(f"Deletion operation completed for value {val}.")
         elif choice == 3:
-            print("Enter value to search: ", end="")
+            print("Enter value to search: ", end="", flush=True)
             val = scanner.next_int()
-            if bst.search(val):
-                print(f"Value {val} found in the tree.")
-            else:
-                print(f"Value {val} NOT found in the tree.")
+            if val is not None:
+                if bst.search(val):
+                    print(f"Value {val} found in the tree.")
+                else:
+                    print(f"Value {val} NOT found in the tree.")
         elif choice == 4:
             print("--- Tree Traversals ---")
             print("Inorder Traversal: " + " ".join(map(str, bst.inorder_traversal())) + " ")
@@ -126,46 +163,48 @@ def graph_menu():
         print("7. Shortest Path (Dijkstra)")
         print("8. Minimum Spanning Tree (Prim)")
         print("9. Return to Main Menu")
-        print("Enter your choice: ", end="")
+        print("Enter your choice: ", end="", flush=True)
 
         choice = scanner.next_int()
         if choice is None: return
 
         if choice == 1:
-            print("Enter vertex label: ", end="")
+            print("Enter vertex label: ", end="", flush=True)
             label = scanner.next()
             graph.add_vertex(label)
             print(f"Vertex {label} added.")
         elif choice == 2:
-            print("Enter source vertex: ", end="")
+            print("Enter source vertex: ", end="", flush=True)
             src = scanner.next()
-            print("Enter destination vertex: ", end="")
+            print("Enter destination vertex: ", end="", flush=True)
             dest = scanner.next()
-            print("Enter weight: ", end="")
+            print("Enter weight: ", end="", flush=True)
             weight = scanner.next_int()
-            graph.add_edge(src, dest, weight)
-            print(f"Directed edge added: {src} -> {dest} ({weight})")
+            if weight is not None:
+                graph.add_edge(src, dest, weight)
+                print(f"Directed edge added: {src} -> {dest} ({weight})")
         elif choice == 3:
-            print("Enter source vertex: ", end="")
+            print("Enter source vertex: ", end="", flush=True)
             src = scanner.next()
-            print("Enter destination vertex: ", end="")
+            print("Enter destination vertex: ", end="", flush=True)
             dest = scanner.next()
-            print("Enter weight: ", end="")
+            print("Enter weight: ", end="", flush=True)
             weight = scanner.next_int()
-            graph.add_undirected_edge(src, dest, weight)
-            print(f"Undirected edge added between {src} and {dest} with weight {weight}")
+            if weight is not None:
+                graph.add_undirected_edge(src, dest, weight)
+                print(f"Undirected edge added between {src} and {dest} with weight {weight}")
         elif choice == 4:
             graph.display()
         elif choice == 5:
-            print("Enter start vertex for BFS: ", end="")
+            print("Enter start vertex for BFS: ", end="", flush=True)
             start = scanner.next()
             graph.bfs(start)
         elif choice == 6:
-            print("Enter start vertex for DFS: ", end="")
+            print("Enter start vertex for DFS: ", end="", flush=True)
             start = scanner.next()
             graph.dfs(start)
         elif choice == 7:
-            print("Enter start vertex for Dijkstra: ", end="")
+            print("Enter start vertex for Dijkstra: ", end="", flush=True)
             start = scanner.next()
             graph.dijkstra(start)
         elif choice == 8:

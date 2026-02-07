@@ -1,14 +1,19 @@
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class Main {
-    private static Scanner scanner = new Scanner(System.in);
+    private static Scanner scanner;
+    private static boolean echo = false;
     private static BinarySearchTree bst = new BinarySearchTree();
     private static Graph graph = new Graph();
 
     public static void main(String[] args) {
-        int mainChoice;
-
         System.out.println("Welcome to the Data Structures Assignment Program!");
+
+        initializeScanner();
+
+        int mainChoice;
 
         do {
             System.out.println("\n=== MAIN MENU ===");
@@ -17,7 +22,9 @@ public class Main {
             System.out.println("3. Exit");
             System.out.print("Enter your choice: ");
 
-            mainChoice = getIntInput();
+            Integer input = getIntInput();
+            if (input == null) break; // End of input
+            mainChoice = input;
 
             switch (mainChoice) {
                 case 1:
@@ -34,7 +41,51 @@ public class Main {
             }
         } while (mainChoice != 3);
 
-        scanner.close();
+        if (scanner != null) scanner.close();
+    }
+
+    private static void initializeScanner() {
+        // Check if System.console() is null. It is usually null when input is redirected.
+        boolean isInteractive = (System.console() != null);
+
+        if (!isInteractive) {
+            // Batch mode (redirected input)
+            System.out.println("Batch mode detected (input redirected). Echo enabled.");
+            scanner = new Scanner(System.in);
+            echo = true;
+        } else {
+            // Interactive mode
+            Scanner tmpScanner = new Scanner(System.in);
+            System.out.print("Do you want to use input.txt? (y/n): ");
+            String choice = "";
+            if (tmpScanner.hasNextLine()) {
+                choice = tmpScanner.nextLine().trim();
+            }
+            
+            if (choice.equalsIgnoreCase("y")) {
+                File file = new File("input.txt");
+                if (file.exists()) {
+                    System.out.println("Using input.txt...");
+                    try {
+                        scanner = new Scanner(file);
+                        echo = true;
+                    } catch (FileNotFoundException e) {
+                        System.out.println("Error opening file: " + e.getMessage());
+                        System.out.println("Falling back to manual input.");
+                        scanner = tmpScanner;
+                        echo = false;
+                    }
+                } else {
+                    System.out.println("input.txt not found. Falling back to manual input.");
+                    scanner = tmpScanner;
+                    echo = false;
+                }
+            } else {
+                System.out.println("Using manual input.");
+                scanner = tmpScanner;
+                echo = false;
+            }
+        }
     }
 
     private static void bstMenu() {
@@ -50,28 +101,36 @@ public class Main {
             System.out.println("7. Return to Main Menu");
             System.out.print("Enter your choice: ");
 
-            choice = getIntInput();
+            Integer input = getIntInput();
+            if (input == null) return;
+            choice = input;
 
             switch (choice) {
                 case 1:
                     System.out.print("Enter value to insert: ");
-                    int insertValue = getIntInput();
-                    bst.insert(insertValue);
-                    System.out.println("Value " + insertValue + " inserted successfully.");
+                    Integer insertValue = getIntInput();
+                    if (insertValue != null) {
+                        bst.insert(insertValue);
+                        System.out.println("Value " + insertValue + " inserted successfully.");
+                    }
                     break;
                 case 2:
                     System.out.print("Enter value to delete: ");
-                    int deleteValue = getIntInput();
-                    bst.delete(deleteValue);
-                    System.out.println("Deletion operation completed for value " + deleteValue + ".");
+                    Integer deleteValue = getIntInput();
+                    if (deleteValue != null) {
+                        bst.delete(deleteValue);
+                        System.out.println("Deletion operation completed for value " + deleteValue + ".");
+                    }
                     break;
                 case 3:
                     System.out.print("Enter value to search: ");
-                    int searchValue = getIntInput();
-                    if (bst.search(searchValue)) {
-                        System.out.println("Value " + searchValue + " found in the tree.");
-                    } else {
-                        System.out.println("Value " + searchValue + " NOT found in the tree.");
+                    Integer searchValue = getIntInput();
+                    if (searchValue != null) {
+                        if (bst.search(searchValue)) {
+                            System.out.println("Value " + searchValue + " found in the tree.");
+                        } else {
+                            System.out.println("Value " + searchValue + " NOT found in the tree.");
+                        }
                     }
                     break;
                 case 4:
@@ -119,51 +178,57 @@ public class Main {
             System.out.println("9. Return to Main Menu");
             System.out.print("Enter your choice: ");
 
-            choice = getIntInput();
+            Integer input = getIntInput();
+            if (input == null) return;
+            choice = input;
 
             switch (choice) {
                 case 1:
                     System.out.print("Enter vertex label: ");
-                    String vertex = scanner.next();
+                    String vertex = getStringInput();
                     graph.addVertex(vertex);
                     System.out.println("Vertex " + vertex + " added.");
                     break;
                 case 2:
                     System.out.print("Enter source vertex: ");
-                    String src = scanner.next();
+                    String src = getStringInput();
                     System.out.print("Enter destination vertex: ");
-                    String dest = scanner.next();
+                    String dest = getStringInput();
                     System.out.print("Enter weight: ");
-                    int weight = getIntInput();
-                    graph.addEdge(src, dest, weight);
-                    System.out.println("Directed edge added: " + src + " -> " + dest + " (" + weight + ")");
+                    Integer weight = getIntInput();
+                    if (weight != null) {
+                        graph.addEdge(src, dest, weight);
+                        System.out.println("Directed edge added: " + src + " -> " + dest + " (" + weight + ")");
+                    }
                     break;
                 case 3:
                     System.out.print("Enter source vertex: ");
-                    String uSrc = scanner.next();
+                    String uSrc = getStringInput();
                     System.out.print("Enter destination vertex: ");
-                    String uDest = scanner.next();
+                    String uDest = getStringInput();
                     System.out.print("Enter weight: ");
-                    int uWeight = getIntInput();
-                    graph.addUndirectedEdge(uSrc, uDest, uWeight);
-                    System.out.println("Undirected edge added between " + uSrc + " and " + uDest + " with weight " + uWeight);
+                    Integer uWeight = getIntInput();
+                    if (uWeight != null) {
+                        graph.addUndirectedEdge(uSrc, uDest, uWeight);
+                        System.out.println("Undirected edge added between " + uSrc + " and " + uDest + " with weight " + uWeight);
+                    }
                     break;
                 case 4:
                     graph.display();
                     break;
                 case 5:
                     System.out.print("Enter start vertex for BFS: ");
-                    String bfsStart = scanner.next();
+                    String bfsStart = getStringInput();
                     graph.bfs(bfsStart);
                     break;
                 case 6:
                     System.out.print("Enter start vertex for DFS: ");
-                    String dfsStart = scanner.next();
+                    String dfsStart = getStringInput();
                     graph.dfs(dfsStart);
                     break;
                 case 7:
                     System.out.print("Enter start vertex for Dijkstra: ");
-                    String dijkstraStart = scanner.next();
+                    String dijkstraStart = getStringInput();
                     graph.dijkstra(dijkstraStart);
                     break;
                 case 8:
@@ -178,12 +243,36 @@ public class Main {
         } while (choice != 9);
     }
 
-    private static int getIntInput() {
-        while (!scanner.hasNextInt()) {
-            System.out.println("Invalid input. Please enter a number.");
-            scanner.next(); // Clear invalid input
-            System.out.print("Enter your choice: ");
+    // Reads the next token string, handling BOM if present
+    private static String readToken() {
+        if (!scanner.hasNext()) return null;
+        String token = scanner.next();
+        if (token.startsWith("\uFEFF")) {
+            token = token.substring(1);
         }
-        return scanner.nextInt();
+        return token;
+    }
+
+    private static Integer getIntInput() {
+        while (true) {
+            String token = readToken();
+            if (token == null) return null;
+
+            try {
+                int val = Integer.parseInt(token);
+                if (echo) System.out.println(val);
+                return val;
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number.");
+                System.out.print("Enter your choice: ");
+                // Loop continues to read next token
+            }
+        }
+    }
+
+    private static String getStringInput() {
+        String input = readToken();
+        if (echo && input != null) System.out.println(input);
+        return input;
     }
 }

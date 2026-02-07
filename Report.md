@@ -49,19 +49,63 @@ The Graph is implemented in `Graph.java` using an **Adjacency List**.
 
 ## 4. Program Output Screenshots
 
-> **Note**: Please run the program `Main.java` and take screenshots of the console output for the following scenarios. Insert your images below.
+> **Note**: Please run the program `Main.java` and take screenshots of the console output for the following scenarios. Ensure the output clearly demonstrates the correctness of the operations.
 
-### 4.1 BST Operations
-*(Insert screenshot of inserting values, searching, and deleting)*
+### 4.1 BST: Basic Operations (Insert, Search, Delete)
+**Scenario Description:**
+1.  **Insertion**: Insert a series of values (e.g., 50, 30, 20, 40, 70, 60, 80) to build the tree.
+2.  **Search**: Search for an existing value (e.g., 60) and a non-existing value (e.g., 90).
+3.  **Deletion**: Delete a node (e.g., a leaf node like 20 or a node with two children like 50).
 
-### 4.2 BST Traversals & Properties
-*(Insert screenshot of Inorder, Preorder, Postorder traversals and tree properties)*
+**Screenshots:**
 
-### 4.3 Graph Traversals (BFS & DFS)
-*(Insert screenshot of adding vertices/edges and running BFS/DFS)*
+*(Paste screenshot of Insertion & Search results here)*
 
-### 4.4 Shortest Path & MST
-*(Insert screenshot of Dijkstra's algorithm output and Prim's MST output)*
+<br>
+
+*(Paste screenshot of Deletion confirmation here)*
+
+### 4.2 BST: Traversals & Properties
+**Scenario Description:**
+1.  **Traversals**: Display Inorder (should be sorted), Preorder, and Postorder sequences.
+2.  **Properties**: Show the Tree Height, Total Node Count, and Leaf Node Count.
+3.  **Min/Max**: Display the minimum and maximum values in the tree.
+
+**Screenshots:**
+
+*(Paste screenshot of Tree Traversals output here)*
+
+<br>
+
+*(Paste screenshot of Tree Properties and Min/Max values here)*
+
+### 4.3 Graph: Construction & Traversals (BFS/DFS)
+**Scenario Description:**
+1.  **Setup**: Add vertices (e.g., A, B, C, D, E) and add directed edges between them.
+2.  **Display**: Show the adjacency list representation of the graph.
+3.  **BFS**: Run Breadth-First Search starting from a specific node (e.g., 'A').
+4.  **DFS**: Run Depth-First Search starting from a specific node (e.g., 'A').
+
+**Screenshots:**
+
+*(Paste screenshot of Adding Vertices/Edges and Graph Display here)*
+
+<br>
+
+*(Paste screenshot of BFS and DFS results here)*
+
+### 4.4 Graph: Advanced Algorithms (Dijkstra & Prim)
+**Scenario Description:**
+1.  **Dijkstra's Algorithm**: Calculate shortest paths from a source node to all other nodes.
+2.  **Prim's MST**: Calculate the Minimum Spanning Tree (ensure undirected edges are added if required by the test case).
+
+**Screenshots:**
+
+*(Paste screenshot of Dijkstra's Shortest Path output here)*
+
+<br>
+
+*(Paste screenshot of Prim's MST output here)*
 
 ## 5. Conclusion
 
